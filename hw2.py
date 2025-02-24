@@ -51,25 +51,20 @@ def tax(income):
     rates = [0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37]
     
     tax_amount = 0
-
-    if income >= thresholds[0]:
-        tax_amount += thresholds[0] * rates[0]
-        prev = thresholds[0]
-    else:
-        tax_amount += income * rates[0]
-        return round(tax_amount, 2)
+    prev = 0  # Initialize the previous threshold to 0
     
-    for i in range(1, len(thresholds)):
+    for i in range(len(thresholds)):
         current = thresholds[i]
         rate = rates[i]
-        if income >= current:
-            # for a full bracket, the taxable amount is the range from
-            # (previous threshold + 1) to the current threshold
-            taxable = current - (prev + 1)
+        
+        if income > current:
+            # For a full bracket, the taxable amount is the range from
+            # the previous threshold to the current threshold.
+            taxable = current - prev
             tax_amount += taxable * rate
             prev = current
         else:
-            # For a partial bracket, tax the amount above the previous bracket's upper limit
+            # For a partial bracket, tax the amount above the previous threshold
             taxable = income - prev
             tax_amount += taxable * rate
             return round(tax_amount, 2)
