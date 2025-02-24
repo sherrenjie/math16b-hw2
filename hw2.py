@@ -41,7 +41,6 @@ def is_leap_year(year):
 
 # Problem 3: Income Tax Calculation
 def tax(income):
-    from decimal import Decimal, ROUND_HALF_UP
     """
     Computes the tax for a given income based on the U.S. tax brackets.
     The tax is calculated incrementally based on the defined income ranges.
@@ -74,7 +73,7 @@ def tax(income):
     if income > thresholds[-1]:
         taxable = income - thresholds[-1]
         tax_amount += taxable * rates[-1]
-    return float(Decimal(tax_amount).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP))
+    return float(f"{tax_amount:.2f}")
 
 # print(tax(50000))  # Output: 6789.88
 
