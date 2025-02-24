@@ -45,29 +45,42 @@ def tax(income):
     Computes the tax for a given income based on the U.S. tax brackets.
     The tax is calculated incrementally based on the defined income ranges.
     """
-    # Tax brackets
-    brackets = [
-        (9875, 0.10),
-        (40125, 0.12),
-        (85525, 0.22),
-        (163300, 0.24),
-        (207350, 0.32),
-        (518400, 0.35),
-        (float('inf'), 0.37)
-    ]
+    # upper thresholds for the brackets and their rates
+    # these thresholds are the upper limits for each bracket
+    thresholds = [9875, 40125, 85525, 163300, 207350, 518400]
+    rates = [0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37]
     
-    tax_amount = 0 
-    previous_bracket = 0  # Track previous income bracket
+    tax_amount = 0
 
-    for bracket, rate in brackets:
-        if income > bracket:
-            tax_amount += (bracket - previous_bracket) * rate
-            previous_bracket = bracket
+    if income >= thresholds[0]:
+        tax_amount += thresholds[0] * rates[0]
+        prev = thresholds[0]
+    else:
+        tax_amount += income * rates[0]
+        return round(tax_amount, 2)
+    
+    for i in range(1, len(thresholds)):
+        current = thresholds[i]
+        rate = rates[i]
+        if income >= current:
+            # for a full bracket, the taxable amount is the range from
+            # (previous threshold + 1) to the current threshold
+            taxable = current - (prev + 1)
+            tax_amount += taxable * rate
+            prev = current
         else:
-            tax_amount += (income - previous_bracket) * rate
-            break  # No need to process further brackets
-
+            # For a partial bracket, tax the amount above the previous bracket's upper limit
+            taxable = income - prev
+            tax_amount += taxable * rate
+            return round(tax_amount, 2)
+    
+    # for income over the last threshold:
+    if income > thresholds[-1]:
+        tax_amount += (income - thresholds[-1]) * rates[-1]
     return round(tax_amount, 2)
+
+# print(tax(50000))  # Output: 6789.88
+
 
 # Problem 4: Square Root Approximation
 def square_root(n, tolerance):
