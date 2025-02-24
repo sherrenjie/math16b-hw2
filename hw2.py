@@ -67,11 +67,12 @@ def tax(income):
             # For a partial bracket, tax the amount above the previous threshold
             taxable = income - prev
             tax_amount += taxable * rate
-            return round(tax_amount, 2)
+            break
     
     # for income over the last threshold:
     if income > thresholds[-1]:
-        tax_amount += (income - thresholds[-1]) * rates[-1]
+        taxable = income - thresholds[-1]
+        tax_amount += taxable * rates[-1]
     return round(tax_amount, 2)
 
 # print(tax(50000))  # Output: 6789.88
